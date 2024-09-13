@@ -1,0 +1,10 @@
+[
+    {
+      "testname":"Empty username",
+      "username":"",
+      "email":"admin@apptino.com",
+      "phone":"9921345",
+      "password":"Admin@123",
+       "errormsg":"mail Exists already"
+}
+]
