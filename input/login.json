@@ -1,7 +1,7 @@
 [{
     "testname":"Invalid password",
     "email":"admin@apptino.com",
-    "password":"Admin",
+    "password":"Admin1",
     "errormsg":"Enter valid email and password."
 },
 {
