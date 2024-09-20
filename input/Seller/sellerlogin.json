@@ -1,0 +1,42 @@
+[{
+    "testname":"Invalid password",
+    "email":"preetha@apptino.com",
+    "password":"Admin1",
+    "errormsg":"These credentials do not match our records."
+},
+{
+    "testname":"Buyer credentails",
+    "email":"preetha@mailto.plus",
+    "password":"Admin@123",
+    "errormsg":"These credentials do not match our records."
+},
+{
+    "testname":"Random input as email",
+    "email":"preethaapptino.com",
+    "password":"Admin",
+    "errormsg":"These credentials do not match our records."
+},
+{
+    "testname":"number as email & password",
+    "email":"1234567",
+    "password":"12345",
+    "errormsg":"These credentials do not match our records."
+},
+
+
+
+{
+    "testname":"Invalid email",
+    "email":"admin@apptino",
+    "password":"Admin@123",
+    "errormsg":"These credentials do not match our records."
+},
+{
+    "testname":"Invalid email and password",
+    "email":"admin@appt",
+    "password":"Admin",
+    "errormsg":"These credentials do not match our records."
+}
+
+
+]
