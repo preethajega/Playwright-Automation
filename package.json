@@ -5,7 +5,8 @@
   "license": "MIT",
   "devDependencies": {
     "@playwright/test": "^1.47.0",
-    "@types/node": "^22.5.0"
+    "@types/node": "^22.5.0",
+    "allure-playwright": "^3.0.1"
   },
   "scripts": {
     "test": "playwright test —-project=webkit",
@@ -19,6 +20,7 @@
     "updateBrowsers": "yarn playwright install --with-deps"
   },
   "dependencies": {
+    "allure": "^0.0.0",
     "axios": "^1.7.7"
   }
 }

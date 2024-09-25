@@ -67,11 +67,165 @@ class santy{
         this.chooseaddreslast=page.locator('(//div[@class="overflow-y-auto"]/div/li)[last()]')
         this.selectedaddressshow=page.locator("//p[contains(@class,'font-semibold text-xs text-baseContrast')]")
 
+        //products page
+        this.addtocartbtn=page.getByRole('button', { name: 'Add to Cart' })
+        this.addbtn=page.locator("(//button[normalize-space()='Add'])[1]")
+        this.addbtnsearch=page.getByRole('button', { name: 'Add' })
+        this.deceracebtnfirst=page.locator("(//body//main//button//span[1]//*[name()='svg'])[1]")
+        this.increasebtnfirst=page.locator("(//body//main//span[3]//*[name()='svg'])[1]")
+        this.rasiproducttext=page.locator("//a[normalize-space()='Rassi Maida 500G']")
+        this.productnamefirstPLP=page.locator('//h2[@class="text-sm font-semibold text-black-400"]//a')
+        this.productnamefirstplp=page.locator("//div[contains(@class,'grid grid-cols-2 gap-x-2 gap-y-4')]//div[1]//div[1]//div[2]//div[1]//h2[1]")
+        this.productnamelastplp=page.locator("//div[contains(@class,'grid grid-cols-2 gap-x-2 gap-y-4')]//div[last()]//div[1]//div[2]//div[1]//h2[1]")
+        this.addedqtyfirst=page.locator("(//span[@class='text-base text-baseContrast m-1'])[1]")
+        this.addedqtylast=page.locator("(//span[@class='text-base text-baseContrast m-1'])[last()]")
 
+        
+        //order page
+        this.addreseditorder=page.getByTestId('edit-address-button')
+        this.deliveryeditorder=page.getByTestId('edit-delivery-button')
+        this.paymenteditorder=page.getByTestId('edit-payment-button')
+        this.continuedeliverybtn=page.getByTestId('submit-address-button')
+        this.continuetopaymnet=page.getByTestId('submit-delivery-option-button')
+        this.continuetoreview= page.getByTestId('submit-payment-button')
+        this.adddiscount=page.getByTestId('add-discount-button')
+        this.appydiscbtn=page.getByTestId('discount-apply-button')
+        this.discerrmsg=page.getByText('Gift card with code: was not')
+        this.placeorderbtn=page.locator("(//button[text()='Place Order'])[last()]")
+        this.gotohomebtn=page.getByRole('button', { name: 'Go to Home' })
+        this.orderpage=page.getByRole('link', { name: 'Orders' })
+        this.orderpagetxt=page.getByText('Orders')
+        this.orderpageback=page.getByRole('link').first()
+
+        this.productnamefirstorder=page.locator('//tr[@data-testid="product-row"][1]//td[2]//p[1]')
+        this.productnamelastorder=page.locator('//tr[@data-testid="product-row"][last()]//td[2]//p[1]')
+
+        this.carttextorder=page.locator("//h2[normalize-space()='In your Cart']")
+        this.carttotal=page.locator("//span[normalize-space()='Total']")
+
+
+
+
+
+        //cart page 
+        this.viewcart=page.getByRole('link', { name: 'View Cart' })
+        this.checkoutbtn=page.getByRole('button', { name: 'Go to checkout' })
+        this.cartbackbtn=page.locator("//span[text()='Back']")
+        this.productnamecartfirst=page.locator('(//p[@class="text-medium w-auto"])[1]')
+        this.productnamecartlast=page.locator('(//p[@class="text-medium w-auto"])[last()]')
+        this.cartitemfirst=page.locator('//div[contains(@class,"sm:mb-5 md:mb-2  px-2")]//div[@class="mb-2"][1]')
+        this.cartclosebtn=page.getByRole('link').first()
+        this.exploreproductcart=page.getByRole('link', { name: 'Explore Products' })
+        
+        //sucesspage
+        this.ordersucessmsg=page.locator('(//h1//span)[2]')
+        this.ordersummarytxt=page.locator("//p[contains(@class,'fg-base flex items-center gap-x-2 ml-3')]")
 
     }
 
+    async removeProduct(){
+        await this.deceracebtnfirst.click()
+
+    }
+
+    async viewcarts(){
+        await this.viewcart.click()
+        
+    }
+    async isProductInCart(){
+        await this.cartitemfirst.click()
+        try {
+            console.log('entered in isproductincart try ...');
+            await this.page.waitForSelector(this.cartitemfirst, { state: 'attached', timeout: 1000 });
+            //await this.deceracebtnfirst.waitForSelector();
+            return true;
+        } 
+        catch (e) {
+            console.log('entered in isproductincart catch ...');
+            return false;
+        }
+        
+    }
+    async removeProductUntilGone() {
+        while (await this.isProductInCart()) {
+          console.log('Product found in cart, removing...');
+          await this.removeProduct();
     
+          // Optionally wait for cart to update
+          await this.page.waitForTimeout(2000); // Wait 2 seconds before checking again
+    
+          // Refresh or check for dynamic updates
+          await this.reload();
+        }
+        console.log('Product is no longer in the cart.');
+      }
+
+      async cartclearverify(cartemptytxt){
+        await this.removeProduct()
+        await this.reload()
+        await this.page.waitForTimeout(5000)
+        const cartcleartext= await this.exploreproductcart.textContent()
+        await expect(cartcleartext.trim()).toBe(cartemptytxt);
+      }
+      async productsearchadd(productname){
+        await this.Homesearchbar.click()
+        await this.Homesearchbar.fill(productname)
+        await this.addbtnsearch.click()
+        await this.Homesearchbar.clear()
+      }
+
+      async placeorder(){
+        const productnamecarttxt1 = await this.productnamecartfirst.textContent()
+        const  productnamecarttxt2 = await this.productnamecartlast.textContent()
+        await this.checkoutbtn.click()
+        await this.page.waitForTimeout(5000)
+        await this.reload()
+        await this.page.waitForTimeout(5000)
+        await this.carttotal.scrollIntoViewIfNeeded()
+        await this.page.waitForTimeout(5000)
+        const productnameordertxt1 = await this.productnamefirstorder.textContent()
+        await this.page.waitForTimeout(2000)
+        const  productnameordertxt2 = await this.productnamelastorder.textContent()
+
+        // await expect(productnamecarttxt1.trim()).toBe(productnameordertxt1.trim());
+        // await expect(productnamecarttxt2.trim()).toBe(productnameordertxt2.trim());
+        await this.placeorderbtn.click()
+        await this.page.waitForTimeout(5000)
+
+      }
+
+      async orderhistory(){
+        await this.settingicon.click()
+        await this.orderpage.click()
+        await this.page.waitForTimeout(5000)
+      }
+
+      async placeorderverify(ordersucesstext){
+        const ordersucesstxt =await this.ordersucessmsg.textContent()
+        await expect(ordersucesstxt.trim()).toBe(ordersucesstext)
+        
+
+      }
+
+
+    async addtocartwithsearch(productname){
+        await this.Homesearchbar.click()
+        await this.Homesearchbar.fill(productname)
+        await this.addbtnsearch.click()
+        const productnametxt = await this.productnamefirstPLP.textContent()
+        const  addedqty = await this.addedqtyfirst.textContent()
+        await this.viewcart.click()
+        await this.page.waitForTimeout(5000)
+
+
+
+        const productnametxtcart = await this.productnamecartfirst.textContent()
+        const  addedqtycart = await this.addedqtyfirst.textContent()
+
+        await expect(productnametxt.trim()).toBe(productnametxtcart.trim());
+        await expect(addedqty.trim()).toBe(addedqtycart.trim());
+        
+     }
     async login(username,password){
         await this.userName.fill(username)
         await this.passWord.fill(password)
@@ -232,6 +386,8 @@ class santy{
         await this.plppdpback.click();
 
      }
+
+    
 
 
 

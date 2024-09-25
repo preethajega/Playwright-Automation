@@ -1,0 +1,7 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","13405","Verify the Existing buyer is able to login successfully with the email","MobileSafari","Tue Sep 24 15:08:28 IST 2024","passed","Tue Sep 24 15:08:41 IST 2024","santy Test","login/santy.spec.js","",""
+"","14411","Verify the Home Screen,Product List page,Product detail pages post successfull login","MobileSafari","Tue Sep 24 15:08:28 IST 2024","passed","Tue Sep 24 15:08:42 IST 2024","santy Test","login/santy.spec.js","",""
+"","15234","Verify the user is able to logout from the application successfully","MobileSafari","Tue Sep 24 15:08:28 IST 2024","passed","Tue Sep 24 15:08:43 IST 2024","santy Test","login/santy.spec.js","",""
+"","11850","Verify the user is able to add new delivery address successfully","MobileSafari","Tue Sep 24 15:08:39 IST 2024","passed","Tue Sep 24 15:08:51 IST 2024","santy Test","login/santy.spec.js","",""
+"","10582","verifying Signup with new user with Email into the application successfully","MobileSafari","Tue Sep 24 15:08:28 IST 2024","passed","Tue Sep 24 15:08:39 IST 2024","santy Test","login/santy.spec.js","",""
+"","12423","verify Signup with new user with Email into the application successfully","MobileSafari","Tue Sep 24 15:08:42 IST 2024","passed","Tue Sep 24 15:08:54 IST 2024","santy Test","login/santy.spec.js","",""
