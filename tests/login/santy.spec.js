@@ -95,7 +95,7 @@ test.describe('santy Test', () => {
     test('Verify the selected products are available in Cart', async ({page}) => { 
         santy = new santylogin(page)
         await santy.goto('/auth')
-        await santy.login(santyip.username1,santyip.password)
+        await santy.login(santyip.username2,santyip.password)
         await page.waitForTimeout(3000)
         await santy.reload()
         await page.waitForTimeout(3000)

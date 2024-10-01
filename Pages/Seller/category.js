@@ -102,6 +102,12 @@ async createdoubleNestedcategory(categoryname,handlename){
     await this.saveCategory.click();
 }
 
+async deletecategory(){
+    await this.moreoptBtn.click();
+    await this.page.waitForLoadState("networkidle")
+    await this.deletecatBtn.click();
+    }
+    
 async deleteNestedcategory(){
     await this.catexpand.click()
     await this.moreoptBtn.click();
