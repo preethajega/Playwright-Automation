@@ -2,6 +2,26 @@ const { test, expect,page,waitForSelector} = require('@playwright/test');
 module.exports={
     categoryname:'sports',
     HandleName:"Newsports",
+    categorynamenew:'Newsports',
+    HandleNamenew:"Newsports",
+    categoryname1:'Toys',
+    HandleName1:"NewToys",
+    categoryname2:'clock',
+    HandleName2:"Newclock",
+    categoryname3:'Pens',
+    HandleName3:"NewPens",
+    categoryname4:'Specialsports',
+    HandleName4:"NewSpecialsports",
+    categorynameactive:'Actives',
+    HandleNameactive:"NewActives",
+    categorynameactive1:'NewActives',
+    HandleNameactive1:"NewActive",
+    categorynamePublic:'Publics',
+    HandleNameapublic:"NewPublics",
+    categorynamePublic1:'NewPublics',
+    HandleNameapublic1:"NewPublic",
+    categorynamenesteds:"NEWProtective equip",
+    HandleNamenesteds:"NEWProtective equip",
     categorynamenested:"Protective equipment",
     HandleNamenested:"New Protective equipment",
     categorynamenested1:"Clothing",
@@ -12,7 +32,12 @@ module.exports={
     editHandleName:"Newsport",
     catsucessmsg:"Successfully created a category",
     catdeltemsg:"Category deleted",
-    catupdatemsg:"Successfully updated the category"
+    catupdatemsg:"Successfully updated the category",
+    isactivetxt:"Active",
+    isInactivetxt:"Inactive",
+    isPublic:"Public",
+    isPrivate:"Private"
+
 
 }
 

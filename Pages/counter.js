@@ -1,4 +1,4 @@
-const { commandClasses } = require('appium/build/lib/cli/extension');
+// const { commandClasses } = require('appium/build/lib/cli/extension');
 const fs = require('fs').promises;
 const path = require('path');
 const filePath =path.resolve(__dirname, 'counterData.json')
