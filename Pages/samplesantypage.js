@@ -71,6 +71,14 @@ class santy{
         this.addtocartbtn=page.getByRole('button', { name: 'Add to Cart' })
         this.addbtn=page.locator("(//button[normalize-space()='Add'])[1]")
         this.addbtnsearch=page.getByRole('button', { name: 'Add' })
+        this.varientaddfirst=page.getByRole('button', { name: 'Add' }).first()
+        this.varientaddPLPfirst= page.locator('(//div[@class="flex items-center"]//div/button[text()="Add"])[1]')
+        this.varientaddPLPlast= page.locator('(//div[@class="flex items-center"]//div/button[text()="Add"])[last()]')
+        this.vareientnamePLPfirst=page.locator('(//p[@class="text-xs font-normal"])[1]')
+        this.vareientnamePLPlast=page.locator('(//p[@class="text-xs font-normal"])[last()]')
+        this.varientnameaddPDPfirst=page.locator('(//button[@data-testid="option-button"])[1]')
+        this.varientnameaddPDPlast=page.locator('(//button[@data-testid="option-button"])[last()]')
+        this.varientcardclose=page.locator("//div[contains(@class,'gap-1.5 p-4 sm:text')]//*[name()='svg']")
         this.deceracebtnfirst=page.locator("(//body//main//button//span[1]//*[name()='svg'])[1]")
         this.increasebtnfirst=page.locator("(//body//main//span[3]//*[name()='svg'])[1]")
         this.rasiproducttext=page.locator("//a[normalize-space()='Rassi Maida 500G']")
@@ -79,7 +87,9 @@ class santy{
         this.productnamelastplp=page.locator("//div[contains(@class,'grid grid-cols-2 gap-x-2 gap-y-4')]//div[last()]//div[1]//div[2]//div[1]//h2[1]")
         this.addedqtyfirst=page.locator("(//span[@class='text-base text-baseContrast m-1'])[1]")
         this.addedqtylast=page.locator("(//span[@class='text-base text-baseContrast m-1'])[last()]")
-
+        this.productpriceplpfirst=page.locator('(//span[@data-testid="product-price"])[1]')
+        this.productpriceplplast=page.locator('(//span[@data-testid="product-price"])[last()]')
+        
         
         //order page
         this.addreseditorder=page.getByTestId('edit-address-button')
@@ -116,10 +126,34 @@ class santy{
         this.cartitemfirst=page.locator('//div[contains(@class,"sm:mb-5 md:mb-2  px-2")]//div[@class="mb-2"][1]')
         this.cartclosebtn=page.getByRole('link').first()
         this.exploreproductcart=page.getByRole('link', { name: 'Explore Products' })
+        this.productunitpricefirst=page.locator('(//span[@data-testid="product-unit-price"])[1]')
+        this.productunitpricelast=page.locator('(//span[@data-testid="product-unit-price"])[last()]')
+        this.unitqtyshow=page.locator("(//p[@class='font-normal font-sans txt-medium text-ui-fg-muted'])[1]")
+
+        this.subtotal=page.locator('//span[@data-testid="cart-subtotal"]')
+        this.shipping=page.locator('//span[@data-testid="cart-shipping"]')
+        this.tax=page.locator('(//span[@data-testid="cart-taxes"])[1]')
+        this.PlatformFee=page.locator('(//span[@data-testid="cart-taxes"])[last()]')
+        this.grandtot=page.locator('//span[@data-testid="cart-total"]')
+
+        this.discountorgiftcode=page.getByTestId('add-discount-button')
+        this.discountapplybtn=page.getByTestId('discount-apply-button')
+        this.discounterrormsg=page.locator('//div[@data-testid="discount-error-message"]//span')
+        this.discountinputbox=page.getByTestId('discount-input')
+        this.discremoved=page.getByTestId('remove-discount-button')
+        this.discappliedafter=page.locator('//span[@data-testid="discount-code"]')
+
         
         //sucesspage
         this.ordersucessmsg=page.locator('(//h1//span)[2]')
         this.ordersummarytxt=page.locator("//p[contains(@class,'fg-base flex items-center gap-x-2 ml-3')]")
+
+        //PDP page
+        this.firstprodpdplink=page.getByRole('link', { name: 'image-' })
+        this.productnamePDP=page.locator('//div[@class="flex flex-col w-full "]//div//h1')
+        this.productprice=page.getByTestId('product-price')
+
+        
 
     }
 
@@ -132,32 +166,47 @@ class santy{
         await this.viewcart.click()
         
     }
-    async isProductInCart(){
-        await this.cartitemfirst.click()
-        try {
-            console.log('entered in isproductincart try ...');
-            await this.page.waitForSelector(this.cartitemfirst, { state: 'attached', timeout: 1000 });
-            //await this.deceracebtnfirst.waitForSelector();
-            return true;
-        } 
-        catch (e) {
-            console.log('entered in isproductincart catch ...');
-            return false;
+    async checkAndClickViewCart() {
+        const isViewCartVisible = await this.viewcart.isVisible();
+        
+        if (isViewCartVisible) {
+          console.log('View Cart is visible, clicking it...');
+          await this.viewcart.click(); // Perform the click action
+        } else {
+          console.log('View Cart is not visible, doing nothing.');
         }
+      }
+    async isProductInCart(){
+        await this.checkAndClickViewCart()
+        await this.page.waitForTimeout(2000);
+        // await this.cartitemfirst.click()
+        const product = await this.cartitemfirst.isVisible();
+        if (product) {
+          await this.page.waitForTimeout(2000);
+        console.log('Product is still in the cart.');
+        return true;
+        } else {
+          await this.page.waitForTimeout(2000);
+        console.log('Product not found in the cart.');
+        return false;
+        }   
         
     }
     async removeProductUntilGone() {
         while (await this.isProductInCart()) {
           console.log('Product found in cart, removing...');
           await this.removeProduct();
-    
-          // Optionally wait for cart to update
-          await this.page.waitForTimeout(2000); // Wait 2 seconds before checking again
-    
-          // Refresh or check for dynamic updates
+          await this.page.waitForTimeout(2000);
           await this.reload();
         }
         console.log('Product is no longer in the cart.');
+        const isHomeButtonVisible = await this.exploreproductcart.isVisible();   
+        if (isHomeButtonVisible) {
+          console.log('Home button is visible, clicking it...');
+          await this.exploreproductcart.click();
+        } else {
+          console.log('Home button is not visible, navigation skipped.');
+        }
       }
 
       async cartclearverify(cartemptytxt){
@@ -193,6 +242,15 @@ class santy{
         await this.page.waitForTimeout(5000)
 
       }
+      async placeorderalone(){
+        await this.checkoutbtn.click()
+        await this.page.waitForTimeout(3000)
+        await this.carttotal.scrollIntoViewIfNeeded()
+        await this.page.waitForTimeout(2000)
+        await this.placeorderbtn.click()
+        await this.page.waitForTimeout(5000)
+
+      }
 
       async orderhistory(){
         await this.settingicon.click()
@@ -200,24 +258,21 @@ class santy{
         await this.page.waitForTimeout(5000)
       }
 
-      async placeorderverify(ordersucesstext){
+    async placeorderverify(ordersucesstext){
         const ordersucesstxt =await this.ordersucessmsg.textContent()
         await expect(ordersucesstxt.trim()).toBe(ordersucesstext)
-        
-
       }
 
 
     async addtocartwithsearch(productname){
         await this.Homesearchbar.click()
+        await this.page.waitForTimeout(2000);
         await this.Homesearchbar.fill(productname)
         await this.addbtnsearch.click()
         const productnametxt = await this.productnamefirstPLP.textContent()
         const  addedqty = await this.addedqtyfirst.textContent()
         await this.viewcart.click()
         await this.page.waitForTimeout(5000)
-
-
 
         const productnametxtcart = await this.productnamecartfirst.textContent()
         const  addedqtycart = await this.addedqtyfirst.textContent()
@@ -226,6 +281,67 @@ class santy{
         await expect(addedqty.trim()).toBe(addedqtycart.trim());
         
      }
+
+     async addtocartwithsearchalone(productname){
+      await this.Homesearchbar.click()
+      await this.page.waitForTimeout(2000);
+      await this.Homesearchbar.fill(productname)
+      await this.addbtnsearch.click()
+      await this.page.waitForTimeout(2000);
+      await this.viewcart.click()
+      await this.page.waitForTimeout(3000)
+     }
+
+     async addtocartwithsearchPDP(productname){
+      await this.Homesearchbar.click()
+      await this.page.waitForTimeout(2000);
+      await this.Homesearchbar.fill(productname)
+      await this.firstprodpdplink.click()
+      await this.addtocartbtn.click()
+      const productnametxt = await this.productnamePDP.textContent()
+      const  addedqty = await this.addedqtyfirst.textContent()
+      await this.viewcart.click()
+      await this.page.waitForTimeout(5000)
+
+      const productnametxtcart = await this.productnamecartfirst.textContent()
+      const  addedqtycart = await this.addedqtyfirst.textContent()
+
+      await expect(productnametxt.trim()).toBe(productnametxtcart.trim());
+      await expect(addedqty.trim()).toBe(addedqtycart.trim());
+      
+   }
+     async addtocartwithExploreproduct(productname){
+        await this.exploreproductcart.click()
+        await this.Homesearchbar.click()
+        await this.Homesearchbar.fill(productname)
+        await this.addbtnsearch.click()
+        const productnametxt = await this.productnamefirstPLP.textContent()
+        const  addedqty = await this.addedqtyfirst.textContent()
+        await this.viewcart.click()
+        await this.page.waitForTimeout(5000)
+
+        const productnametxtcart = await this.productnamecartfirst.textContent()
+        const  addedqtycart = await this.addedqtyfirst.textContent()
+
+        await expect(productnametxt.trim()).toBe(productnametxtcart.trim());
+        await expect(addedqty.trim()).toBe(addedqtycart.trim());
+        
+    }
+
+    async addtocartwithsearchvarientproduct(productname){
+      await this.Homesearchbar.click()
+      await this.page.waitForTimeout(2000);
+      await this.Homesearchbar.fill(productname)
+      await this.addbtnsearch.click()
+      await this.varientaddPLPfirst.click()
+      await this.page.waitForTimeout(2000);
+      await this.varientcardclose.click()
+      await this.page.waitForTimeout(2000);
+      await this.viewcart.click()
+      await this.page.waitForTimeout(3000)
+
+
+    }
     async login(username,password){
         await this.userName.fill(username)
         await this.passWord.fill(password)
@@ -386,6 +502,7 @@ class santy{
         await this.plppdpback.click();
 
      }
+    
 
     
 
