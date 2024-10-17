@@ -39,8 +39,11 @@ class LoginPage {
       }
       async ValidCredentails(){
         await this.page.getByPlaceholder('Email').fill("preetha@apptino.com")
+        await this.page.waitForTimeout(1000);
         await this.page.getByPlaceholder('Password').fill("Admin@123")
+        await this.page.waitForTimeout(1000);
         await this.page.getByText('Continue').click()
+        await this.page.waitForTimeout(1000);
         await this.page.waitForLoadState("networkidle")
         
       }

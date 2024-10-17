@@ -9,6 +9,8 @@ class Cart {
         this.productvarientnamecartlast=page.locator('(//p[@class="text-sm mt-1"])[last()]')
         this.varientnameaddPDPfirst=page.locator('(//button[@data-testid="option-button"])[1]')
         this.varientnameaddPDPlast=page.locator('(//button[@data-testid="option-button"])[last()]')
+        this.producttotpricefirst=page.locator('(//span[@data-testid="product-price"])[1]')
+        this.producttotpricelast=page.locator('(//span[@data-testid="product-price"])[last()]')
 
         this.discount= page.getByTestId('cart-discount')
         this.subtotal=page.locator('//span[@data-testid="cart-subtotal"]')
@@ -26,6 +28,8 @@ class Cart {
         this.disccodeApplied=page.locator('//span[@data-testid="discount-code"]')
         this.disccodeAmount=page.getByTestId('discount-amount')
 
+        this.activecommons=page.locator('(//tbody[@role="rowgroup"])//tr')
+        this.stauscommon=page.locator('(//tbody[@role="rowgroup"])//tr//td[5]/div/div/span')
 
 
     }
@@ -95,12 +99,6 @@ class Cart {
         await this.page.reload({timeout: 100000, waitUntil: 'load'});
     }
 
-    async applydiscout(){
-        await this.discountorgiftcode.click()
-        await this.discountinputbox.click()
-        await this.discountinputbox.fill()
-        await this.discountapplybtn.click()
-    }
     async discvalid(){
         const isdisapplied =await this.discount.isVisible()
         if (isdisapplied) {
@@ -110,7 +108,13 @@ class Cart {
         }
     }
     async removedisc(){
-        await this.discremovebtn.click()
+        const isdiscremovebtn=await this.discremovebtn.isVisible()
+        if (isdiscremovebtn) {
+            await this.discremovebtn.click()
+            console.log('Discount removed...');
+        } else {
+            console.log('Discount is not removed...');
+        }
         const isdiscremoved= await this.discountapplybtn.isVisible()
         if (isdiscremoved) {
             console.log('Discount removed...');
@@ -133,6 +137,81 @@ class Cart {
         await this.page.waitForTimeout(1000)
         await expect(TotalAdd).toBe(finaltotal);
     }
+
+    async invaliddiscvalidtion(errormsg,errorip){
+        const Errorelem = (await errormsg.textContent()).trim()
+        await this.page.waitForTimeout(1000)
+        console.log("Errorelemtexttttttttt",Errorelem)
+        expect(Errorelem).toEqual(expect.stringContaining(errorip));
+        await this.discount.isHidden()
+    }
+    async applydiscout(disccode){
+        await this.discountorgiftcode.click()
+        await this.discountinputbox.click()
+        await this.discountinputbox.fill(disccode)
+        await this.discountapplybtn.click()
+        await this.page.waitForTimeout(2000)
+    }
+
+    async discss(){
+        let couponCodes = [];
+        const activeRows = await this.activecommons;
+        const rowCount = await activeRows.count();
+            
+        console.log("activeRowscountss", rowCount);
+            
+        if (rowCount === 0) {
+                console.log('No rows with "Active" status found.');
+                return;
+        }
+        for (let j = 0; j < rowCount; j++) {
+            const active = await this.stauscommon.nth(j).textContent();
+                
+            if (active.includes('Active')) {
+                console.log('Active status found:', active);
+        
+                const elementID = j; 
+                console.log('Active element ID (row number):', elementID);
+    
+                const codeElement = await activeRows.locator('xpath=(//tbody[@role="rowgroup"])//tr//td[1]/div/div/span').nth(j);
+                const code = (await codeElement.textContent()).trim();
+
+                console.log('Active Coupon Code:', code);
+                couponCodes.push(code);
+            }
+        }
+        function printStoredCodes() {
+            console.log('Stored coupon codes:', couponCodes);
+        }
+        printStoredCodes()
+        console.log("Coupon codes collected:", couponCodes);
+        return couponCodes;
+    }
+    async  applyFirstDiscount() {
+        const couponCodes = await this.discss();
+    
+        if (couponCodes.length === 0) {
+            console.log('No active coupon codes to apply.');
+            return;
+        }
+        const firstCode = couponCodes[0];
+        console.log(`Applying the first active coupon code: ${firstCode}`);
+
+
+        await this.applydiscout(firstCode);
+    }
+
+    async taxinclusivesinglecaluvalid(){
+        const producttot = parseFloat((await this.producttotpricefirst.textContent()).slice(1).trim(), 10);
+        const finaltotal = parseFloat((await this.grandtot.textContent()).slice(1).trim(), 10);
+        console.log("product price",producttot,finaltotal)
+        await expect(producttot).toBe(finaltotal);
+
+
+    }
+
+    
+
 }
 
 module.exports=Cart;

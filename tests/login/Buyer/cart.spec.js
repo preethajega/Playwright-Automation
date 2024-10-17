@@ -6,6 +6,10 @@ const cartip=require("../../../input/Buyer/cartip")
 const santyip = require('../../../input/santy')
 const santylogin=require('../../../Pages/samplesantypage')
 const {getNextIncrement} = require("../../../Pages/counter")
+const discPage = require("../../../Pages/Seller/discount")
+const discIp = require("../../../Pages/Seller/discount")
+const settingspage = require("../../../Pages/Seller/settings")
+const settingsIp = require("../../../input/Seller/settings")
 
 test.describe('Cart PAGE' , () =>{
 
@@ -140,14 +144,292 @@ test.describe('Cart PAGE' , () =>{
 
     });
 
-    // test('Validate user able to apply empty gift card or discount  code and check price is affected or not',async({page})=>{
-
-    // });
+    test('Validate user able to apply empty gift card or discount  code and check price is affected or not',async({page})=>{
+        test.setTimeout(150000);
+        let santy = new santylogin(page)
+        let cart = new cartPage(page)
+        await santy.goto('/auth')
+        await santy.login(santyip.username3,santyip.password)
+        await page.waitForTimeout(3000)
+        await santy.reload()
+        await page.waitForTimeout(3000)
+        await santy.removeProductUntilGone()
+        await santy.addtocartwithsearchalone(santyip.productname2)
+        await cart.applydiscout(cartip.disccodeEmpty)
+        await page.waitForTimeout(2000)
+        await cart.invaliddiscvalidtion(cart.discounterrormsg,cartip.discerror)
+    });
     
+    test('Validate user able to apply expired gift card or discount code and check price is affected or not',async({page})=>{
+        test.setTimeout(150000);
+            let santy = new santylogin(page)
+            let cart = new cartPage(page)
+            let disc = new discPage(page)
+            let login = new LoginPage(page);
+            let buyerlogin = new Buyerloginpage(page);
+    
+        async function applydiscout(disccode){
+            await cart.discountorgiftcode.click()
+            await cart.discountinputbox.click()
+            await cart.discountinputbox.fill(disccode)
+            await cart.discountapplybtn.click()
+            await page.waitForTimeout(2000)
+        }
+    
+        async function discss(){
+            let couponCodes = [];
+            const expiredRows = await cart.activecommons;
+            const rowCount = await expiredRows.count();
+                
+            console.log("expiredRowscountss", rowCount);
+                
+            if (rowCount === 0) {
+                    console.log('No rows with "expired" status found.');
+                    return;
+            }
+            for (let j = 0; j < rowCount; j++) {
+                const expired = await cart.stauscommon.nth(j).textContent();
+                    
+                if (expired.includes('Expired')) {
+                    console.log('expired status found:', expired);
+            
+                    const elementID = j; 
+                    console.log('expired element ID (row number):', elementID);
+        
+                    const codeElement = await expiredRows.locator('xpath=(//tbody[@role="rowgroup"])//tr//td[1]/div/div/span').nth(j);
+                    const code = (await codeElement.textContent()).trim();
+    
+                    console.log('expired Coupon Code:', code);
+                    couponCodes.push(code);
+                }
+            }
+            function printStoredCodes() {
+                console.log('Stored coupon codes:', couponCodes);
+            }
+            printStoredCodes()
+            console.log("Coupon codes collected:", couponCodes);
+            return couponCodes;
+        }
+        async function applyFirstDiscount() {
+            const couponCodes = await discss();
+        
+            if (couponCodes.length === 0) {
+                console.log('No expired coupon codes to apply.');
+                return;
+            }
+            const firstCode = couponCodes[0];
+            console.log(`Applying the first expired coupon code: ${firstCode}`);
+            await page.waitForTimeout(3000)
+            await login.logout()
+            await page.goto("https://mobile.eazygain.com/in/auth")
+            await buyerlogin.signin( santyip.username2,santyip.password)
+            await santy.reload()
+            await page.waitForTimeout(3000)
+            await santy.removeProductUntilGone()
+            await santy.addtocartwithsearchalone(santyip.productname2)
+            await page.waitForTimeout(3000)
+    
+            await cart.removedisc()
+            await applydiscout(firstCode);
+            // await cart.discvalid()
+            await cart.invaliddiscvalidtion(cart.discounterrormsg,cartip.discerror)
+            await santy.placeorderalone()
+            await page.waitForTimeout(5000)
+            await santy.placeorderverify(santyip.ordersucesstext)
+        }
+    
+        await page.goto("https://demo.eazygain.com/app/login")
+        await page.waitForTimeout(3000);
+        await login.ValidCredentails()
+        await page.waitForTimeout(5000);
+        await disc.clickdisc()
+        await page.waitForTimeout(3000);
+        await applyFirstDiscount()
+    
+        });
 
-    // test('Validate Products Added in PDP is reflected in cart',async({page})=>{
+   
+ test('validate that we can able Navigate to checkout with addding any discount coupon (TaxExclusive)',async({page})=>{
+    test.setTimeout(150000);
+        let santy = new santylogin(page)
+        let cart = new cartPage(page)
+        let disc = new discPage(page)
+        let login = new LoginPage(page);
+        let buyerlogin = new Buyerloginpage(page);
 
-    // });
+    async function applydiscout(disccode){
+        await cart.discountorgiftcode.click()
+        await cart.discountinputbox.click()
+        await cart.discountinputbox.fill(disccode)
+        await cart.discountapplybtn.click()
+        await page.waitForTimeout(2000)
+    }
+
+    async function discss(){
+        let couponCodes = [];
+        const activeRows = await cart.activecommons;
+        const rowCount = await activeRows.count();
+            
+        console.log("activeRowscountss", rowCount);
+            
+        if (rowCount === 0) {
+                console.log('No rows with "Active" status found.');
+                return;
+        }
+        for (let j = 0; j < rowCount; j++) {
+            const active = await cart.stauscommon.nth(j).textContent();
+                
+            if (active.includes('Active')) {
+                console.log('Active status found:', active);
+        
+                const elementID = j; 
+                console.log('Active element ID (row number):', elementID);
+    
+                const codeElement = await activeRows.locator('xpath=(//tbody[@role="rowgroup"])//tr//td[1]/div/div/span').nth(j);
+                const code = (await codeElement.textContent()).trim();
+
+                console.log('Active Coupon Code:', code);
+                couponCodes.push(code);
+            }
+        }
+        function printStoredCodes() {
+            console.log('Stored coupon codes:', couponCodes);
+        }
+        printStoredCodes()
+        console.log("Coupon codes collected:", couponCodes);
+        return couponCodes;
+    }
+    async function applyFirstDiscount() {
+        const couponCodes = await discss();
+    
+        if (couponCodes.length === 0) {
+            console.log('No active coupon codes to apply.');
+            return;
+        }
+        const firstCode = couponCodes[1];
+        console.log(`Applying the first active coupon code: ${firstCode}`);
+        await page.waitForTimeout(3000)
+        await login.logout()
+        await page.goto("https://mobile.eazygain.com/in/auth")
+        await buyerlogin.signin( santyip.username1,santyip.password)
+        await santy.reload()
+        await page.waitForTimeout(3000)
+        await santy.removeProductUntilGone()
+        await santy.addtocartwithsearchalone(santyip.productname2)
+        await page.waitForTimeout(3000)
+
+        await cart.removedisc()
+        await applydiscout(firstCode);
+        await cart.discvalid()
+        await santy.placeorderalone()
+        await page.waitForTimeout(5000)
+        await santy.placeorderverify(santyip.ordersucesstext)
+    }
+
+    await page.goto("https://demo.eazygain.com/app/login")
+    await page.waitForTimeout(3000);
+    await login.ValidCredentails()
+    await page.waitForTimeout(5000);
+    await disc.clickdisc()
+    await page.waitForTimeout(3000);
+    await applyFirstDiscount()
+
+    });
+
+
+
+    test('Validate User able to navigate the checkout page with single product or multiple products',async({page})=>{
+        test.setTimeout(150000);
+        let santy = new santylogin(page)
+        let cart = new cartPage(page)
+        await santy.goto('/auth')
+        await santy.login(santyip.username3,santyip.password)
+        await page.waitForTimeout(3000)
+        await santy.reload()
+        await page.waitForTimeout(3000)
+        await santy.removeProductUntilGone()
+        await santy.productsearchadd(santyip.productname)
+        await page.waitForTimeout(2000)
+        await santy.productsearchadd(santyip.productname1)
+        await page.waitForTimeout(2000)
+        await santy.productsearchadd(santyip.productname2)
+        await page.waitForTimeout(2000)
+        await santy.viewcarts()
+        await santy.placeorderalone()
+        await page.waitForTimeout(5000)
+        await santy.placeorderverify(santyip.ordersucesstext)
+
+    });
+
+    
+     test('Validate user able to apply invaild gift card or discount code and check price is affected or not',async({page})=>{
+        test.setTimeout(150000);
+        let santy = new santylogin(page)
+        let cart = new cartPage(page)
+        await santy.goto('/auth')
+        await santy.login(santyip.username4,santyip.password)
+        await page.waitForTimeout(3000)
+        await santy.reload()
+        await page.waitForTimeout(3000)
+        await santy.removeProductUntilGone()
+        await santy.addtocartwithsearchalone(santyip.productname2)
+        await page.waitForTimeout(2000)
+        await cart.removedisc()
+        await cart.applydiscout(cartip.disccodeinvalid)
+        await page.waitForTimeout(2000)
+        await cart.invaliddiscvalidtion(cart.discounterrormsg,cartip.discerror)
+        await cart.discvalid()
+
+     });
+
+
+     test('validate that we can able to Navigate to Checkout with TaxInclisive Products',async({page})=>{
+        test.setTimeout(150000);
+        let santy = new santylogin(page)
+        let cart = new cartPage(page)
+        let settings = new settingspage(page)
+        let disc = new discPage(page)
+        let login = new LoginPage(page);
+        let buyerlogin = new Buyerloginpage(page);
+
+        await page.goto("https://demo.eazygain.com/app/login")
+        await page.waitForTimeout(3000);
+        await login.ValidCredentails()
+        await page.waitForTimeout(5000);
+        await settings.gotosettings()
+        await page.waitForTimeout(1000);
+        await settings.currency()
+        await settings.taxinclusivecheckedtrue()
+        await page.waitForTimeout(1000);
+        await settings.sucessmsgvalid(settings.currencysucessmsg,settingsIp.currencysucessmsg)
+        
+        await settings.backtosetting()
+        await page.waitForTimeout(3000);
+
+        await settings.region()
+        await page.waitForTimeout(1000);
+        await settings.regiontaxchnagetrue(settings.cancelbtn,settings.saveandclosebtn)
+        await page.waitForTimeout(1000);
+        await settings.sucessmsgvalid(settings.regionsucessmsg,settingsIp.regionsucessmsg)
+        await settings.backtosetting()
+
+        await page.waitForTimeout(3000)
+        await login.logout()
+
+        await page.goto("https://mobile.eazygain.com/in/auth")
+        await buyerlogin.signin( santyip.username2,santyip.password)
+        await santy.reload()
+        await page.waitForTimeout(3000)
+        await santy.removeProductUntilGone()
+        await santy.addtocartwithsearchalone(santyip.productname2)
+        await page.waitForTimeout(3000)
+        await cart.taxinclusivesinglecaluvalid()
+        await page.waitForTimeout(3000)
+        await santy.placeorderalone()
+        await page.waitForTimeout(5000)
+        await santy.placeorderverify(santyip.ordersucesstext)
+
+     });
 
 
 

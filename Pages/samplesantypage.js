@@ -129,6 +129,8 @@ class santy{
         this.productunitpricefirst=page.locator('(//span[@data-testid="product-unit-price"])[1]')
         this.productunitpricelast=page.locator('(//span[@data-testid="product-unit-price"])[last()]')
         this.unitqtyshow=page.locator("(//p[@class='font-normal font-sans txt-medium text-ui-fg-muted'])[1]")
+        this.producttotpricefirst=page.locator('(//span[@data-testid="product-price"])[1]')
+        this.producttotpricelast=page.locator('(//span[@data-testid="product-price"])[last()]')
 
         this.subtotal=page.locator('//span[@data-testid="cart-subtotal"]')
         this.shipping=page.locator('//span[@data-testid="cart-shipping"]')

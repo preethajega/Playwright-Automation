@@ -1,0 +1,7 @@
+allure-report
+allure-results
+test-results
+playwright-report
+allure-report/data
+
+playwright-report/index.html

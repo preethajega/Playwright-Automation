@@ -11,6 +11,11 @@ const catinput=JSON.stringify (require('../../../input/Seller/category'))
 //const catinputs=JSON.parse(JSON.stringify(require('../../../input/Seller/category')))
 const { chromium } = require('playwright');
 
+
+// pls run the spec webkit  & chnage the baseurl into webdev
+
+
+
 test.describe('Category PAGE' , () =>{
     let login;
     
