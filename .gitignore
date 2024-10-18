@@ -5,3 +5,14 @@ playwright-report
 allure-report/data
 
 playwright-report/index.html
+playwright-report/index.html
+playwright-report/data/1e5927efd1d405e44bb0f299313a707a6e0515b9.zip
+playwright-report/data/8f8613abeb5e57a3e5b8e0755b8d9598049c89fc.zip
+playwright-report/data/b3f510432cf3e8d11008423e2c0e7704ca627c45.png
+playwright-report/data/c9f85704a7a9e186da907d66bab85fb8ab381b7a.png
+test-results/.last-run.json
+test-results/login-santy-santy-Test-Ver-a9abe-livery-address-successfully-MobileSafari/test-failed-1.png
+test-results/login-santy-santy-Test-Ver-a9abe-livery-address-successfully-MobileSafari/trace.zip
+test-results/login-santy-santy-Test-Ver-dc0d7-create-an-order-successfuly-MobileSafari/test-failed-1.png
+test-results/login-santy-santy-Test-Ver-dc0d7-create-an-order-successfuly-MobileSafari/trace.zip
+playwright-report/index.html

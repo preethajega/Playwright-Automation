@@ -270,6 +270,7 @@ class santy{
         await this.Homesearchbar.click()
         await this.page.waitForTimeout(2000);
         await this.Homesearchbar.fill(productname)
+        await this.page.waitForTimeout(1000);
         await this.addbtnsearch.click()
         const productnametxt = await this.productnamefirstPLP.textContent()
         const  addedqty = await this.addedqtyfirst.textContent()
@@ -288,6 +289,7 @@ class santy{
       await this.Homesearchbar.click()
       await this.page.waitForTimeout(2000);
       await this.Homesearchbar.fill(productname)
+      await this.page.waitForTimeout(1000);
       await this.addbtnsearch.click()
       await this.page.waitForTimeout(2000);
       await this.viewcart.click()

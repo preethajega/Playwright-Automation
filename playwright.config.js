@@ -44,8 +44,7 @@ module.exports = defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'],
            screenshot:"only-on-failure",
-           trace:"retain-on-first-failure",
-           video:"on"
+           trace:"retain-on-first-failure"
       },
     },
     {
@@ -63,8 +62,7 @@ module.exports = defineConfig({
       name: 'webkit',
       use: { ...devices['Desktop Safari'] ,
            screenshot:"only-on-failure",
-           trace:"retain-on-first-failure",
-           video:"on"
+           trace:"retain-on-first-failure"
       },
     },
 

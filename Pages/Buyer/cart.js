@@ -55,7 +55,7 @@ class Cart {
         console.log("productnamescartttttttt111111",producttxtcart1)
         await expect(producttxtcart.trim()).toBe(producttxtcart1.trim());
     }
-    async cartvalidationcalulation(productTxtvalidcart,productTxtvalidcart1,productval){
+    async cartvalidationcalulation1(productTxtvalidcart,productTxtvalidcart1,productval){
         await this.page.waitForTimeout(5000)
         const producttxtcart = (await productTxtvalidcart.textContent()).charAt(0)
         const producttxtcart1 = (await productTxtvalidcart1.textContent()).slice(1).trim()
@@ -72,6 +72,37 @@ class Cart {
         const finalvaltrim = parseInt(finalval, 10)
         console.log("finalvaluessssssssssssssssssfinalvaltrim",finalvaltrim)
         await expect(multiplevalue).toBe(finalvaltrim);
+        
+    }
+
+    async cartvalidationcalulation(productTxtvalidcart,productTxtvalidcart1,productval){
+        await this.page.waitForTimeout(5000)
+        const producttxtcart = (await productTxtvalidcart.textContent()).charAt(0)
+        const producttxtcart1 = parseFloat ((await productTxtvalidcart1.textContent()).slice(1).trim(),10)
+        console.log("productnamescarttttttttt",producttxtcart)
+        console.log("productnamescartttttttt111111",producttxtcart1)
+        await this.page.waitForTimeout(2000)
+        const multiplevalue=producttxtcart*producttxtcart1
+        console.log("multiplevaluessssssssssssssssss",multiplevalue)
+        await this.page.waitForTimeout(2000)
+        const finalvaltrim = parseFloat((await productval.textContent()).slice(1).trim(), 10);
+        await expect(multiplevalue).toBe(finalvaltrim);
+        
+    }
+
+    async cartvalidcalutaxinclusive(productTxtvalidcart,productTxtvalidcart1){
+        await this.page.waitForTimeout(5000)
+        const producttxtcart = (await productTxtvalidcart.textContent()).charAt(0)
+        const producttxtcart1 = parseFloat ((await productTxtvalidcart1.textContent()).slice(1).trim(),10)
+        await this.page.waitForTimeout(2000)
+        const multiplevalue=producttxtcart*producttxtcart1
+        const subtot = parseFloat((await this.subtotal.textContent()).slice(1).trim(), 10);
+        const taxtot = parseFloat((await this.tax.textContent()).slice(1).trim(), 10);
+        const subtotandtax =  subtot+taxtot
+        await this.page.waitForTimeout(2000)
+
+        await expect(multiplevalue).toBe(subtotandtax);
+        
     }
     
     async increaseAndDescrese(increasebtnfirst,qtyTxtcart,qtyTxtcart1){
@@ -208,6 +239,16 @@ class Cart {
         await expect(producttot).toBe(finaltotal);
 
 
+    }
+
+    async taxinclusivecalulation(){
+        const producttot = parseFloat((await this.producttotpricefirst.textContent()).slice(1).trim(), 10);
+        const subtot = parseFloat((await this.subtotal.textContent()).slice(1).trim(), 10);
+        const taxtot = parseFloat((await this.tax.textContent()).slice(1).trim(), 10);
+
+        const subtotandtax =  subtot+taxtot
+
+        await expect(producttot).toBe(subtotandtax);
     }
 
     

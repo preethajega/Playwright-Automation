@@ -13,19 +13,7 @@ const settingsIp = require("../../../input/Seller/settings")
 
 test.describe('Cart PAGE' , () =>{
 
-    test('Validate Products Added in PLP is reflected in cart',async({page})=>{
-        test.setTimeout(150000);
-        let  santy = new santylogin(page)
-        await santy.goto('/auth')
-        await santy.login(santyip.username3,santyip.password)
-        await page.waitForTimeout(3000)
-        await santy.reload()
-        await page.waitForTimeout(3000)
-        await santy.removeProductUntilGone()
-        await santy.addtocartwithsearch(santyip.productname)
-    });
-
-    test('Validate Products Added in PDP is reflected in cart',async({page})=>{
+    test('Validate Products Added in PLP & PDP is reflected in cart',async({page})=>{
         test.setTimeout(150000);
         let  santy = new santylogin(page)
         await santy.goto('/auth')
@@ -34,16 +22,23 @@ test.describe('Cart PAGE' , () =>{
         await santy.reload()
         await page.waitForTimeout(3000)
         await santy.removeProductUntilGone()
-        await santy.addtocartwithsearchPDP(santyip.productname1)
+        await santy.addtocartwithsearch(santyip.productname)
+        await page.waitForTimeout(1000)
+        await santy.cartclearverify(santyip.cartemptytxt)
+        await page.waitForTimeout(1000)
+        await santy.reload()
+        await santy.exploreproductcart.click();
+        await page.waitForTimeout(3000)
+        await santy.addtocartwithsearchPDP(santyip.productname)
+
     });
-
-
+//taxinclusive
     test('Validate Products details like name , unit price, asked qty ,uom, total price shown correctly in Cart page',async({page})=>{
-        test.setTimeout(150000);
+        test.setTimeout(200000);
         let  santy = new santylogin(page)
         let cart = new cartPage(page)
         await santy.goto('/auth')
-        await santy.login(santyip.username4,santyip.password)
+        await santy.login(santyip.username2,santyip.password)
         await page.waitForTimeout(3000)
         await santy.reload()
         await page.waitForTimeout(3000)
@@ -52,7 +47,8 @@ test.describe('Cart PAGE' , () =>{
         await cart.productvalidations(santy.productnamePDP,santy.productnamecartfirst)
         await cart.productvalidations(santy.productprice,santy.productpriceplpfirst)
         await cart.productvalidations(santy.addedqtyfirst,santy.addedqtyfirst)
-        await cart.cartvalidation(santy.productunitpricefirst,santy.subtotal)
+        await cart.taxinclusivecalulation()
+        // await cart.cartvalidation(santy.productunitpricefirst,santy.grandtot)
         
     });
 
@@ -62,12 +58,12 @@ test.describe('Cart PAGE' , () =>{
         let  santy = new santylogin(page)
         let cart = new cartPage(page)
         await santy.goto('/auth')
-        await santy.login(santyip.username1,santyip.password)
+        await santy.login(santyip.username5,santyip.password)
         await page.waitForTimeout(3000)
         await santy.reload()
         await page.waitForTimeout(3000)
         await santy.removeProductUntilGone()
-        await santy.addtocartwithsearchalone(santyip.productname2)
+        await santy.addtocartwithsearchalone(santyip.productname)
         await cart.increaseAndDescrese(santy.increasebtnfirst,santy.addedqtyfirst,santy.unitqtyshow)
         await page.waitForTimeout(3000)
         await santy.increasebtnfirst.click()
@@ -80,12 +76,12 @@ test.describe('Cart PAGE' , () =>{
         test.setTimeout(150000);
         let santy = new santylogin(page)
         await santy.goto('/auth')
-        await santy.login(santyip.username3,santyip.password)
+        await santy.login(santyip.username4,santyip.password)
         await page.waitForTimeout(3000)
         await santy.reload()
         await page.waitForTimeout(3000)
         await santy.removeProductUntilGone()
-        await santy.addtocartwithsearch(santyip.productname1)
+        await santy.addtocartwithsearch(santyip.productname2)
         await santy.cartclearverify(santyip.cartemptytxt)
     });
     
@@ -109,21 +105,21 @@ test.describe('Cart PAGE' , () =>{
         let santy = new santylogin(page)
         let cart = new cartPage(page)
         await santy.goto('/auth')
-        await santy.login(santyip.username2,santyip.password)
+        await santy.login(santyip.username5,santyip.password)
         await page.waitForTimeout(3000)
         await santy.reload()
         await page.waitForTimeout(3000)
         await santy.removeProductUntilGone()
-        await santy.addtocartwithsearchalone(santyip.productname2)
+        await santy.addtocartwithsearchalone(santyip.productname1)
         await santy.increasebtnfirst.click()
         await page.waitForTimeout(2000)
         await santy.reload()
-        await cart.cartvalidationcalulation(santy.unitqtyshow,santy.productunitpricefirst,santy.subtotal)
+        await cart.cartvalidationcalulation(santy.unitqtyshow,santy.productunitpricefirst,santy.grandtot)
         await page.waitForTimeout(4000)
         await santy.deceracebtnfirst.click()
         await page.waitForTimeout(2000)
         await santy.reload()
-        await cart.cartvalidationcalulation(santy.unitqtyshow,santy.productunitpricefirst,santy.subtotal)
+        await cart.cartvalidationcalulation(santy.unitqtyshow,santy.productunitpricefirst,santy.grandtot)
     });
 
     
@@ -132,7 +128,7 @@ test.describe('Cart PAGE' , () =>{
         let santy = new santylogin(page)
         let cart = new cartPage(page)
         await santy.goto('/auth')
-        await santy.login(santyip.username3,santyip.password)
+        await santy.login(santyip.username4,santyip.password)
         await page.waitForTimeout(3000)
         await santy.reload()
         await page.waitForTimeout(3000)
@@ -149,12 +145,12 @@ test.describe('Cart PAGE' , () =>{
         let santy = new santylogin(page)
         let cart = new cartPage(page)
         await santy.goto('/auth')
-        await santy.login(santyip.username3,santyip.password)
+        await santy.login(santyip.username4,santyip.password)
         await page.waitForTimeout(3000)
         await santy.reload()
         await page.waitForTimeout(3000)
         await santy.removeProductUntilGone()
-        await santy.addtocartwithsearchalone(santyip.productname2)
+        await santy.addtocartwithsearchalone(santyip.productname)
         await cart.applydiscout(cartip.disccodeEmpty)
         await page.waitForTimeout(2000)
         await cart.invaliddiscvalidtion(cart.discounterrormsg,cartip.discerror)
@@ -203,10 +199,6 @@ test.describe('Cart PAGE' , () =>{
                     couponCodes.push(code);
                 }
             }
-            function printStoredCodes() {
-                console.log('Stored coupon codes:', couponCodes);
-            }
-            printStoredCodes()
             console.log("Coupon codes collected:", couponCodes);
             return couponCodes;
         }
@@ -292,10 +284,6 @@ test.describe('Cart PAGE' , () =>{
                 couponCodes.push(code);
             }
         }
-        function printStoredCodes() {
-            console.log('Stored coupon codes:', couponCodes);
-        }
-        printStoredCodes()
         console.log("Coupon codes collected:", couponCodes);
         return couponCodes;
     }
@@ -343,18 +331,17 @@ test.describe('Cart PAGE' , () =>{
         let santy = new santylogin(page)
         let cart = new cartPage(page)
         await santy.goto('/auth')
-        await santy.login(santyip.username3,santyip.password)
+        await santy.login(santyip.username1,santyip.password)
         await page.waitForTimeout(3000)
         await santy.reload()
         await page.waitForTimeout(3000)
         await santy.removeProductUntilGone()
         await santy.productsearchadd(santyip.productname)
         await page.waitForTimeout(2000)
-        await santy.productsearchadd(santyip.productname1)
-        await page.waitForTimeout(2000)
         await santy.productsearchadd(santyip.productname2)
         await page.waitForTimeout(2000)
-        await santy.viewcarts()
+        await santy.addtocartwithsearchalone(santyip.productname1)
+        await page.waitForTimeout(2000)
         await santy.placeorderalone()
         await page.waitForTimeout(5000)
         await santy.placeorderverify(santyip.ordersucesstext)
@@ -372,7 +359,7 @@ test.describe('Cart PAGE' , () =>{
         await santy.reload()
         await page.waitForTimeout(3000)
         await santy.removeProductUntilGone()
-        await santy.addtocartwithsearchalone(santyip.productname2)
+        await santy.addtocartwithsearchalone(santyip.productname1)
         await page.waitForTimeout(2000)
         await cart.removedisc()
         await cart.applydiscout(cartip.disccodeinvalid)
@@ -421,7 +408,7 @@ test.describe('Cart PAGE' , () =>{
         await santy.reload()
         await page.waitForTimeout(3000)
         await santy.removeProductUntilGone()
-        await santy.addtocartwithsearchalone(santyip.productname2)
+        await santy.addtocartwithsearchalone(santyip.productname)
         await page.waitForTimeout(3000)
         await cart.taxinclusivesinglecaluvalid()
         await page.waitForTimeout(3000)
@@ -434,3 +421,77 @@ test.describe('Cart PAGE' , () =>{
 
 
 });
+
+
+// test.describe('User 1 Tests',()=>{
+
+//     test.beforeEach(async ({ page }) => {
+//         let santy = new santylogin(page);
+//         await santy.goto('/auth');
+//         await santy.login(santyip.username1, santyip.password);
+//         await page.waitForTimeout(3000)
+//         await santy.reload()
+//         await page.waitForTimeout(3000)
+//         await santy.removeProductUntilGone(); 
+//     });
+
+
+
+//     test('Validate Products Added in PLP & PDP is reflected in cart',async({page})=>{
+//         test.setTimeout(150000);
+//         let  santy = new santylogin(page)
+//         await santy.addtocartwithsearch(santyip.productname)
+//         await page.waitForTimeout(3000)
+//         await santy.cartclearverify(santyip.cartemptytxt)
+//         await page.waitForTimeout(1000)
+//         await santy.exploreproductcart.click();
+//         await page.waitForTimeout(3000)
+//         await santy.addtocartwithsearchPDP(santyip.productname)
+
+//     });
+
+//     test('Validate line wise total is shown correctly when user increase & decrease the qty of the product',async({page})=>{
+//         test.setTimeout(150000);
+//         let  santy = new santylogin(page)
+//         let cart = new cartPage(page)
+//         await santy.addtocartwithsearchalone(santyip.productname)
+//         await cart.increaseAndDescrese(santy.increasebtnfirst,santy.addedqtyfirst,santy.unitqtyshow)
+//         await page.waitForTimeout(3000)
+//         await santy.increasebtnfirst.click()
+//         await page.waitForTimeout(3000)
+//         await cart.increaseAndDescrese(santy.deceracebtnfirst,santy.addedqtyfirst,santy.unitqtyshow)
+//     });
+    
+
+
+//     test('Validate User able to remove products completly in cart page and make cart is empty and When cart is empty validate the close it should redirects to home page',async({page})=>{
+//         test.setTimeout(150000);
+//         let santy = new santylogin(page)
+//         await santy.addtocartwithsearch(santyip.productname2)
+//         await santy.cartclearverify(santyip.cartemptytxt)
+//     });
+    
+//     test('Validate Added Products Respective variants are showed in cart page properly',async({page})=>{
+//         test.setTimeout(150000);
+//         let santy = new santylogin(page)
+//         let cart = new cartPage(page)
+//         await santy.addtocartwithsearchvarientproduct(santyip.productname3)
+//         await cart.productvalidations(santy.varientnameaddPDPfirst,cart.productvarientnamecartfirst)
+
+//     });
+
+
+
+// });
+
+// test.describe('User 2 Tests',()=>{
+
+// });
+
+// test.describe('User 3 Tests',()=>{
+
+// });
+
+// test.describe('User 4 Tests',()=>{
+
+// });

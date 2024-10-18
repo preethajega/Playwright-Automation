@@ -10,6 +10,7 @@ module.exports={
     username1:"preetha@mailto.plus",
     username2:"admins@mailto.plus",
     username3:"admin@apptino.com",
+    username5:"demo@mailto.plus",
     username4:"aravindan@eazygain.com",
     password1:"Admin@123",
     Name:"Admin",
