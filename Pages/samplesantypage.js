@@ -506,6 +506,17 @@ class santy{
         await this.plppdpback.click();
 
      }
+
+     async taxclulationsingle(){
+      const productprice = await this.producttotpricefirst.textContent()
+      const taxs =await this.tax.textContent()
+
+      const calulatedtax= productprice*taxpercent
+      
+      await expect(calulatedtax).toBe(taxs);
+
+
+     }
     
 
     

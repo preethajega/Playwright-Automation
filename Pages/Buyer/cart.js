@@ -235,7 +235,7 @@ class Cart {
     async taxinclusivesinglecaluvalid(){
         const producttot = parseFloat((await this.producttotpricefirst.textContent()).slice(1).trim(), 10);
         const finaltotal = parseFloat((await this.grandtot.textContent()).slice(1).trim(), 10);
-        console.log("product price",producttot,finaltotal)
+        console.log("product price",producttot,finaltotal);
         await expect(producttot).toBe(finaltotal);
 
 
@@ -249,6 +249,22 @@ class Cart {
         const subtotandtax =  subtot+taxtot
 
         await expect(producttot).toBe(subtotandtax);
+    }
+
+    async taxExclusivecalulationsingle(){
+        const producttot = parseFloat((await this.producttotpricefirst.textContent()).slice(1).trim(), 10);
+        const subtot = parseFloat((await this.subtotal.textContent()).slice(1).trim(), 10);
+        console.log("product price",producttot,subtot)
+        await expect(producttot).toBe(subtot);
+    }
+    
+    async taxExclusivecalulationmultiple(){
+        const producttot1 = parseFloat((await this.producttotpricefirst.textContent()).slice(1).trim(), 10);
+        const producttot2 = parseFloat((await this.producttotpricelast.textContent()).slice(1).trim(), 10);
+        const allprod = producttot1+producttot2
+        const subtot = parseFloat((await this.subtotal.textContent()).slice(1).trim(), 10);
+        console.log("product price",allprod,subtot)
+        await expect(allprod).toBe(subtot);
     }
 
     

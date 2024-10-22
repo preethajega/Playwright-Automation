@@ -22,6 +22,14 @@ class settings {
         this.taxinclusivepricecurrency=page.locator('(//button[@role="switch"])[1]')
         this.currencysucessmsg=page.locator('//div[contains(@class,"2xsmall flex flex-grow flex-col text-white")]//span[2]')
 
+        //tax elements
+        this.taxpage= page.getByRole('button', { name: 'Taxes Manage taxes across' })
+        this.taxrowcommon=page.locator('(//tbody[@role="rowgroup"]//tr)')
+        this.taxratecommon=page.locator('(//tbody[@role="rowgroup"]//tr//td[3])')
+        this.defaulttaxname=page.locator('//tbody[@role="rowgroup"]//tr[1]//td//div//div[contains(@class,"gap-x-xsmall text-grey")]')
+        this.defalttaxpercent=page.locator('(//tbody[@role="rowgroup"]//tr//td[3])[1]')
+
+
 
 
     }
@@ -42,6 +50,11 @@ class settings {
 
     async region(){
         await this.regionpage.click()
+        await this.page.waitForLoadState("networkidle")
+    }
+
+    async tax(){
+        await this.taxpage.click()
         await this.page.waitForLoadState("networkidle")
     }
 
@@ -104,6 +117,28 @@ class settings {
             await expect(sucessmsgtxt).toBe(sucessmag1.trim());
         }
     }
+
+    async getdefaulttax(){
+        let taxpercentage=[];
+        const taxname= await this.defaulttaxname.textContent()
+        const taxpercent= await this.defalttaxpercent.textContent()
+
+        console.log('taxname,taxpercent--->',taxname,taxpercent)
+
+        return taxpercent;
+    }
+
+    async taxclulationsingle(){
+        const taxpercents = await this.getdefaulttax();
+        const productprice = await this.producttotpricefirst.textContent()
+        const taxs =await this.tax.textContent()
+  
+        const calulatedtax= productprice*taxpercents
+        
+        await expect(calulatedtax).toBe(taxs);
+    }
+
+    
 
 
 }

@@ -10,8 +10,48 @@ const discPage = require("../../../Pages/Seller/discount")
 const discIp = require("../../../Pages/Seller/discount")
 const settingspage = require("../../../Pages/Seller/settings")
 const settingsIp = require("../../../input/Seller/settings")
+const pricingpage = require("../../../Pages/Seller/pricing")
+const pricingIp = require("../../../input/Seller/pricing")
 
 test.describe('Cart PAGE' , () =>{
+
+     test.beforeAll('change the site into taxExcusive',async({browser})=>{
+        const context = await browser.newContext();
+        const page = await context.newPage();
+        test.setTimeout(150000);
+        let santy = new santylogin(page)
+        let cart = new cartPage(page)
+        let settings = new settingspage(page)
+        let disc = new discPage(page)
+        let login = new LoginPage(page);
+        let buyerlogin = new Buyerloginpage(page);
+
+        await page.goto("https://demo.eazygain.com/app/login")
+        await page.waitForTimeout(3000);
+        await login.ValidCredentails()
+        await page.waitForTimeout(5000);
+        await settings.gotosettings()
+        await page.waitForTimeout(1000);
+        await settings.currency()
+        await settings.taxinclusivecheckedtrue()
+        await page.waitForTimeout(1000);
+        await settings.sucessmsgvalid(settings.currencysucessmsg,settingsIp.currencysucessmsg)
+        
+        await settings.backtosetting()
+        await page.waitForTimeout(3000);
+
+        await settings.region()
+        await page.waitForTimeout(1000);
+        await settings.regiontaxchnagetrue(settings.cancelbtn,settings.saveandclosebtn)
+        await page.waitForTimeout(1000);
+        await settings.sucessmsgvalid(settings.regionsucessmsg,settingsIp.regionsucessmsg)
+        await settings.backtosetting()
+
+        await page.waitForTimeout(3000)
+        await login.logout()
+
+    });
+
 
     test('Validate Products Added in PLP & PDP is reflected in cart',async({page})=>{
         test.setTimeout(150000);
@@ -48,7 +88,6 @@ test.describe('Cart PAGE' , () =>{
         await cart.productvalidations(santy.productprice,santy.productpriceplpfirst)
         await cart.productvalidations(santy.addedqtyfirst,santy.addedqtyfirst)
         await cart.taxinclusivecalulation()
-        // await cart.cartvalidation(santy.productunitpricefirst,santy.grandtot)
         
     });
 
@@ -379,31 +418,7 @@ test.describe('Cart PAGE' , () =>{
         let login = new LoginPage(page);
         let buyerlogin = new Buyerloginpage(page);
 
-        await page.goto("https://demo.eazygain.com/app/login")
-        await page.waitForTimeout(3000);
-        await login.ValidCredentails()
-        await page.waitForTimeout(5000);
-        await settings.gotosettings()
-        await page.waitForTimeout(1000);
-        await settings.currency()
-        await settings.taxinclusivecheckedtrue()
-        await page.waitForTimeout(1000);
-        await settings.sucessmsgvalid(settings.currencysucessmsg,settingsIp.currencysucessmsg)
-        
-        await settings.backtosetting()
-        await page.waitForTimeout(3000);
-
-        await settings.region()
-        await page.waitForTimeout(1000);
-        await settings.regiontaxchnagetrue(settings.cancelbtn,settings.saveandclosebtn)
-        await page.waitForTimeout(1000);
-        await settings.sucessmsgvalid(settings.regionsucessmsg,settingsIp.regionsucessmsg)
-        await settings.backtosetting()
-
-        await page.waitForTimeout(3000)
-        await login.logout()
-
-        await page.goto("https://mobile.eazygain.com/in/auth")
+        await santy.goto('/auth')
         await buyerlogin.signin( santyip.username2,santyip.password)
         await santy.reload()
         await page.waitForTimeout(3000)
@@ -418,80 +433,85 @@ test.describe('Cart PAGE' , () =>{
 
      });
 
+     test('validate that product tax is Calculated based on selcted defualt tax in admin app (TaxInclusive)',async({page})=>{
+        test.setTimeout(150000);
+        let santy = new santylogin(page)
+        let cart = new cartPage(page)
+        let disc = new discPage(page)
+        let login = new LoginPage(page);
+        let buyerlogin = new Buyerloginpage(page);
+        let pricing=new pricingpage(page)
+        let settings = new settingspage(page)
+
+        
+
+        async function getdefaulttax(){
+            let taxpercentage=[];
+            const taxname= await settings.defaulttaxname.textContent()
+            const taxpercents= await settings.defalttaxpercent.textContent()
+            const taxpercent= taxpercents.replace('%', '').trim()
+    
+            console.log('taxname,taxpercent--->',taxname,taxpercent)
+    
+            return taxpercent;
+        }
+
+        async function taxclulationsingle(){
+            const taxpercents = await getdefaulttax();
+            await page.waitForTimeout(2000);
+            await settings.backtosetting()
+            await page.waitForTimeout(3000)
+            await login.logout()
+
+            await page.goto("https://mobile.eazygain.com/in/auth")
+            await buyerlogin.signin( santyip.username1,santyip.password)
+            await santy.reload()
+            await page.waitForTimeout(3000)
+            await santy.removeProductUntilGone()
+            await page.waitForTimeout(3000)
+            await santy.reload()
+            await santy.addtocartwithsearchalone(santyip.productname2)
+            await page.waitForTimeout(3000)
+            await cart.removedisc()
+            await page.waitForTimeout(3000)
+
+            const productprice =parseFloat((await santy.producttotpricefirst.textContent()).slice(1).trim(), 10);
+            const taxs =parseFloat((await santy.tax.textContent()).slice(1).trim(), 10)
+            const shippings =parseFloat((await santy.shipping.textContent()).slice(1).trim(), 10)
+            
+            console.log('shippings prices',shippings)
+            const taxvalue=parseFloat((taxpercents)/100)+1
+            console.log('getted prices',productprice,taxvalue)
+            const calulatedtaxvalue= productprice/taxvalue
+            const calulatedtax =productprice-calulatedtaxvalue
+            const calulatedtaxrounded= parseFloat(calulatedtax.toFixed(2))
+            console.log('calulatedtax prices',calulatedtaxrounded)
+            if (shippings!=0) {
+                const shippngtax=taxs-calulatedtaxrounded
+                const shippngtaxdeducted=taxs-shippngtax
+                console.log('calulated shipping tax prices',shippngtax,shippngtaxdeducted)
+                await expect(calulatedtaxrounded).toBe(shippngtaxdeducted);
+            }
+            else{
+                await expect(calulatedtaxrounded).toBe(taxs);
+            }
+            
+            await page.waitForTimeout(3000)
+            await santy.placeorderalone()
+            await page.waitForTimeout(5000)
+            await santy.placeorderverify(santyip.ordersucesstext)
+        }
+        await page.goto("https://demo.eazygain.com/app/login")
+        await page.waitForTimeout(3000);
+        await login.ValidCredentails()
+        await page.waitForTimeout(5000);
+        await settings.gotosettings()
+        await page.waitForTimeout(2000);
+        await settings.tax()
+        await page.waitForTimeout(2000);
+        await taxclulationsingle()
+    });
+
 
 
 });
-
-
-// test.describe('User 1 Tests',()=>{
-
-//     test.beforeEach(async ({ page }) => {
-//         let santy = new santylogin(page);
-//         await santy.goto('/auth');
-//         await santy.login(santyip.username1, santyip.password);
-//         await page.waitForTimeout(3000)
-//         await santy.reload()
-//         await page.waitForTimeout(3000)
-//         await santy.removeProductUntilGone(); 
-//     });
-
-
-
-//     test('Validate Products Added in PLP & PDP is reflected in cart',async({page})=>{
-//         test.setTimeout(150000);
-//         let  santy = new santylogin(page)
-//         await santy.addtocartwithsearch(santyip.productname)
-//         await page.waitForTimeout(3000)
-//         await santy.cartclearverify(santyip.cartemptytxt)
-//         await page.waitForTimeout(1000)
-//         await santy.exploreproductcart.click();
-//         await page.waitForTimeout(3000)
-//         await santy.addtocartwithsearchPDP(santyip.productname)
-
-//     });
-
-//     test('Validate line wise total is shown correctly when user increase & decrease the qty of the product',async({page})=>{
-//         test.setTimeout(150000);
-//         let  santy = new santylogin(page)
-//         let cart = new cartPage(page)
-//         await santy.addtocartwithsearchalone(santyip.productname)
-//         await cart.increaseAndDescrese(santy.increasebtnfirst,santy.addedqtyfirst,santy.unitqtyshow)
-//         await page.waitForTimeout(3000)
-//         await santy.increasebtnfirst.click()
-//         await page.waitForTimeout(3000)
-//         await cart.increaseAndDescrese(santy.deceracebtnfirst,santy.addedqtyfirst,santy.unitqtyshow)
-//     });
-    
-
-
-//     test('Validate User able to remove products completly in cart page and make cart is empty and When cart is empty validate the close it should redirects to home page',async({page})=>{
-//         test.setTimeout(150000);
-//         let santy = new santylogin(page)
-//         await santy.addtocartwithsearch(santyip.productname2)
-//         await santy.cartclearverify(santyip.cartemptytxt)
-//     });
-    
-//     test('Validate Added Products Respective variants are showed in cart page properly',async({page})=>{
-//         test.setTimeout(150000);
-//         let santy = new santylogin(page)
-//         let cart = new cartPage(page)
-//         await santy.addtocartwithsearchvarientproduct(santyip.productname3)
-//         await cart.productvalidations(santy.varientnameaddPDPfirst,cart.productvarientnamecartfirst)
-
-//     });
-
-
-
-// });
-
-// test.describe('User 2 Tests',()=>{
-
-// });
-
-// test.describe('User 3 Tests',()=>{
-
-// });
-
-// test.describe('User 4 Tests',()=>{
-
-// });
