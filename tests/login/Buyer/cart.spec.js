@@ -15,7 +15,7 @@ const pricingIp = require("../../../input/Seller/pricing")
 
 test.describe('Cart PAGE' , () =>{
 
-     test.beforeAll('change the site into taxExcusive',async({browser})=>{
+     test.beforeAll('change the site into taxinclusive',async({browser})=>{
         const context = await browser.newContext();
         const page = await context.newPage();
         test.setTimeout(150000);

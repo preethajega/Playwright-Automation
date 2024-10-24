@@ -57,10 +57,18 @@ class Category {
        this.catdeletemsg=page.locator("//span[text()='Category deleted']")
        this.catcreatemsg=page.locator("//span[text()='Successfully created a category']")
        this.catupdatemsg=page.locator("//span[text()='Successfully updated the category']")
+       this.catswapmsg=page.locator('//span[text()="Successfully updated category tree"]')
 
 
       this.Editacivetext= page.locator('#is_active div').filter({ hasText: 'Active' }).nth(1)
 
+      this.reorganizebtn=page.locator('(//span[@class="nestable-item-handler"])[last()]')
+      this.targetcate=page.locator('(//span[@class="nestable-item-handler"])[8]')
+
+      this.reorganizebtn1=page.locator('//ol[@class="nestable-list nestable-group"]/li[7]')
+      this.targetcate1=page.locator('//ol[@class="nestable-list nestable-group"]/li[8]')
+      
+      
 
        
        
@@ -225,6 +233,163 @@ async Statusvisablitychange(moreopt,statusvisablityexpandbtn,statuschnage){
     await this.page.waitForTimeout(2000)
     await this.saveCategory.click()
 }
+
+async Reorganizecategory1(){
+    console.log("entered in reorganize")
+    await this.reorganizebtn.isVisible()
+    console.log("reorganizebtn is visable")
+    await this.reorganizebtn.dragTo(this.targetcate)
+    console.log("complated the reorganize")
+}
+async reorganizeCategory() {
+    console.log("entered in reorganize");
+
+    await this.reorganizebtn.isVisible();
+    console.log("reorganizebtn is visible");
+
+    const boundingBox = await this.targetcate.boundingBox();
+    const targetBoundingBox = await this.reorganizebtn.boundingBox();
+    
+    console.log("Reorganize Button Bounding Box:", boundingBox);
+    console.log("Target Category Bounding Box:", targetBoundingBox);
+
+    const sourceX = boundingBox.x + boundingBox.width / 2;
+    const sourceY = boundingBox.y + boundingBox.height / 2;
+    const targetX = targetBoundingBox.x + targetBoundingBox.width / 2;
+    const targetY = targetBoundingBox.y + targetBoundingBox.height / 2;
+
+
+    await this.page.mouse.move(sourceX, sourceY);
+    await this.page.mouse.down();
+    await this.page.waitForTimeout(500); // Adjust this wait time as needed
+    console.log('Mouse down');
+
+    await this.page.mouse.move(targetX, targetY);
+    await this.page.mouse.up();
+    await this.page.waitForTimeout(500); // Adjust this wait time as needed
+    console.log('Mouse up');
+
+    // // Perform manual drag-and-drop simulation
+    // await this.page.mouse.move(boundingBox.x + boundingBox.width / 2, boundingBox.y + boundingBox.height / 2);
+    // await this.page.mouse.down();
+    // await this.page.waitForTimeout(2000)
+    // console.log('moveddown')
+    // await this.page.mouse.move(targetBoundingBox.x + targetBoundingBox.width / 2, targetBoundingBox.y + targetBoundingBox.height / 2);
+    // await this.page.mouse.up();
+    // await this.page.waitForTimeout(2000)
+    // console.log('movedup')
+
+    console.log("completed the reorganize");
+}
+
+async reorganizeCategory2() {
+    console.log("entered in reorganize");
+
+    // Ensure the elements are visible before proceeding
+    await this.reorganizebtn.isVisible();
+    await this.targetcate.isVisible();
+    console.log("reorganizebtn and targetcate are visible");
+
+    // Manually trigger drag-and-drop events using page.evaluate()
+    await this.page.evaluate(({sourceSelector, targetSelector}) => {
+        const source = document.querySelector(sourceSelector);
+        const target = document.querySelector(targetSelector);
+
+        if (!source || !target) {
+            console.log("Source or target element not found");
+            return;
+        }
+
+        // Create a new DataTransfer object for the drag event
+        const dataTransfer = new DataTransfer();
+
+        // Dispatch dragstart event on source element
+        const dragStartEvent = new DragEvent('dragstart', { dataTransfer });
+        source.dispatchEvent(dragStartEvent);
+
+        // Dispatch dragover event on target element
+        const dragOverEvent = new DragEvent('dragover', { dataTransfer });
+        target.dispatchEvent(dragOverEvent);
+
+        // Dispatch drop event on target element
+        const dropEvent = new DragEvent('drop', { dataTransfer });
+        target.dispatchEvent(dropEvent);
+
+        // Dispatch dragend event on source element
+        const dragEndEvent = new DragEvent('dragend', { dataTransfer });
+        source.dispatchEvent(dragEndEvent);
+    }, 
+    {
+        sourceSelector: this.reorganizebtn._selector,
+        targetSelector: this.targetcate._selector
+    });
+
+    console.log("completed the reorganize using manual events");
+}
+
+async reorganizeCategory3() {
+    console.log("entered in reorganize");
+
+    // Ensure the elements are visible before proceeding
+    await this.reorganizebtn.isVisible();
+    await this.targetcate.isVisible();
+    console.log("reorganizebtn and targetcate are visible");
+    await this.targetcate.click()
+    
+    // Manually trigger drag-and-drop events using page.evaluate()
+    await this.page.evaluate(({ sourceXPath, targetXPath }) => {
+        function getElementByXPath(xpath) {
+            return document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        }
+        const source1 = document.evaluate('//ol[@class="nestable-list nestable-group"]/li[8]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+const target1 = document.evaluate('//ol[@class="nestable-list nestable-group"]/li[7]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+
+console.log(getEventListeners(source1));
+console.log(getEventListeners(target1));
+
+        const source = getElementByXPath(sourceXPath);
+        const target = getElementByXPath(targetXPath);
+
+        if (!source || !target) {
+            console.log("Source or target element not found");
+            return;
+        }
+
+       
+        // Create a new DataTransfer object for the drag event
+        const dataTransfer = new DataTransfer();
+
+        // Dispatch dragstart event on source element
+        const dragStartEvent = new DragEvent('dragstart', { dataTransfer });
+        console.log("Dispatching dragstart event");
+        source.dispatchEvent(dragStartEvent);
+
+        // Dispatch dragover event on target element
+        const dragOverEvent = new DragEvent('dragover', { dataTransfer });
+        console.log("Dispatching dragover event");
+
+        target.dispatchEvent(dragOverEvent);
+
+        // Dispatch drop event on target element
+        const dropEvent = new DragEvent('drop', { dataTransfer });
+        console.log("Dispatching drop event");
+
+        target.dispatchEvent(dropEvent);
+
+        // Dispatch dragend event on source element
+        const dragEndEvent = new DragEvent('dragend', { dataTransfer });
+        console.log("Dispatching dragend event");
+
+        source.dispatchEvent(dragEndEvent);
+    }, {
+        sourceXPath: '//ol[@class="nestable-list nestable-group"]/li[8]', // Use your actual XPath for source
+        targetXPath: '//ol[@class="nestable-list nestable-group"]/li[7]' // Use your actual XPath for target
+    }); // Wrap XPath expressions in an object
+
+    console.log("completed the reorganize using manual events");
+}
+
+
 
 }
 

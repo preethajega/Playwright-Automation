@@ -31,7 +31,7 @@ module.exports = defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-     baseURL: env.mobiledev,
+     baseURL: env.webdev,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -51,7 +51,8 @@ module.exports = defineConfig({
       name: 'MobileSafari',
       use: { ...devices['iPhone 12'],
            screenshot:"only-on-failure",
-           trace:"retain-on-first-failure"
+           trace:"retain-on-first-failure",
+           video:"retain-on-failure"
         
       },
 
@@ -62,7 +63,8 @@ module.exports = defineConfig({
       name: 'webkit',
       use: { ...devices['Desktop Safari'] ,
            screenshot:"only-on-failure",
-           trace:"retain-on-first-failure"
+           trace:"retain-on-first-failure",
+           video:"retain-on-failure"
       },
     },
 
