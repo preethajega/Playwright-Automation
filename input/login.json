@@ -1,0 +1,59 @@
+[{
+    "testname":"Invalid password",
+    "email":"admin@apptino.com",
+    "password":"Admin1",
+    "errormsg":"Enter valid email and password."
+},
+{
+    "testname":"seller credentails",
+    "email":"madhankumar@apptino.com",
+    "password":"Admin@123",
+    "errormsg":"Enter valid email and password."
+},
+{
+    "testname":"Random input as email",
+    "email":"adminapptino.com",
+    "password":"Admin",
+    "errormsg":"Enter valid email and password."
+},
+{
+    "testname":"number as email & password",
+    "email":"1234567",
+    "password":"12345",
+    "errormsg":"Enter valid email and password."
+},
+
+
+
+{
+    "testname":"Invalid email",
+    "email":"admin@apptino",
+    "password":"Admin@123",
+    "errormsg":"Enter valid email and password."
+},
+{
+    "testname":"Invalid email and password",
+    "email":"admin@appt",
+    "password":"Admin",
+    "errormsg":"Enter valid email and password."
+},
+{
+    "testname":"empty password",
+    "email":"admin@apptino.com",
+    "password":"",
+    "errormsg":"Enter valid email and password."
+},
+{
+    "testname":"empty username",
+    "email":"",
+    "password":"Admin@123",
+    "errormsg":"Enter valid email and password."
+},
+{
+    "testname":"valid credentails",
+    "email":"admin@apptino.com",
+    "password":"Admin@123"
+   
+}
+
+]

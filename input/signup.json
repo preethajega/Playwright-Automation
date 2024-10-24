@@ -1,0 +1,131 @@
+[
+    {
+      "testname":"Empty username",
+      "username":"",
+      "email":"admin@apptino.com",
+      "phone":"9921345",
+      "password":"Admin@123",
+       "errormsg":"mail Exists already"
+},
+    {
+        "testname":"Empty email",
+        "username":"user",
+        "email":"",
+        "phone":"9921345",
+        "password":"Admin@123",
+       "errormsg":"mail Exists already"
+},
+      {
+        "testname":"Empty passowrd",
+        "username":"user",
+        "email":"admin@apptino.com",
+        "phone":"9921345",
+        "password":"",
+       "errormsg":"mail Exists already"
+},
+      {
+        "testname":"Empty username,email,passwrd",
+        "username":"",
+        "email":"",
+        "phone":"9921345",
+        "password":"",
+       "errormsg":"mail Exists already"
+},
+      {
+        "testname":"Already mapped email",
+        "username":"madhan",
+        "email":"admin@apptino.com",
+        "phone":"9921345",
+        "password":"Admin@123",
+       "errormsg":"mail Exists already"
+},
+      {
+        "testname":"text as email",
+        "username":"",
+        "email":"adminapptino",
+        "phone":"9921345",
+        "password":"Admin@123",
+       "errormsg":"mail Exists already"
+},
+      {
+        "testname":"Number as email",
+        "username":"user",
+        "email":"12345",
+        "phone":"9921345",
+        "password":"Admin@123",
+       "errormsg":"mail Exists already"
+},
+      {
+        "testname":"Invalid email",
+        "username":"user",
+        "email":"adminapptino.com",
+        "phone":"9921345",
+        "password":"Admin@123",
+       "errormsg":"mail Exists already"
+},
+      {
+        "testname":"Only text as password",
+        "username":"user",
+        "email":"admin@apptino.com",
+        "phone":"9921345",
+        "password":"Apptinoadmin",
+       "errormsg":"mail Exists already"
+},
+      {
+        "testname":"only number as password",
+        "username":"user",
+        "email":"admin@apptino.com",
+        "phone":"9921345",
+        "password":"123456789",
+       "errormsg":"mail Exists already"
+},
+      {
+        "testname":"only spl char as password",
+        "username":"user",
+        "email":"admin@apptino.com",
+        "phone":"9921345",
+        "password":"!@#$#$%^&*$%^&",
+       "errormsg":"mail Exists already"
+},
+      {
+        "testname":"Paswordcombination without uppercase",
+        "username":"user",
+        "email":"admin@apptino.com",
+        "phone":"9921345",
+        "password":"@dmin@123",
+       "errormsg":"mail Exists already"
+},
+      {
+        "testname":"Paswordcombination without lowercase",
+        "username":"user",
+        "email":"admin@apptino.com",
+        "phone":"9921345",
+        "password":"ADMIN@123",
+       "errormsg":"mail Exists already"
+},
+
+      {
+        "testname":"Paswordcombination without number",
+        "username":"user",
+        "email":"admin@apptino.com",
+        "phone":"9921345",
+        "password":"Admin@admin",
+       "errormsg":"mail Exists already"
+},
+      {
+        "testname":"Paswordcombination without splchar",
+        "username":"user",
+        "email":"admin@apptino.com",
+        "phone":"9921345",
+        "password":"Admin123",
+       "errormsg":"mail Exists already"
+},
+      {
+        "testname":"Paswordcombination with less no of char",
+        "username":"user",
+        "email":"admin@apptino.com",
+        "phone":"9921345",
+        "password":"A@1a",
+       "errormsg":"mail Exists already"
+}
+]
